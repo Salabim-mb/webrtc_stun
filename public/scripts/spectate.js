@@ -32,6 +32,11 @@ spectatorSocket.on("offer", (id, description) => {
   };
 });
 
+spectatorSocket.on("broadcaster_disconnect", () => {
+  console.log("broadcaster disconnected")
+  video.srcObject = null;
+})
+
 
 spectatorSocket.on("candidate", (id, candidate) => {
   peerConnection

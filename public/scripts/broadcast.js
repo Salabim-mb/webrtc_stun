@@ -10,6 +10,7 @@ const config = {
 const videoElement = document.querySelector("video");
 const audioSelect = document.querySelector("select#audioSource");
 const videoSelect = document.querySelector("select#videoSource");
+const shareScreenBtn = document.querySelector("button#btnScreenShare");
 
 const broadcasterSocket = io.connect(window.location.origin);
 
@@ -47,9 +48,11 @@ broadcasterSocket.on("peer_disconnect", id => {
   delete peerConnections[id];
 });
 
-window.onunload = window.onbeforeunload = () => {
+window.addEventListener("beforeunload", () => {
+  broadcasterSocket.emit("peer_disconnect");
   broadcasterSocket.close();
-};
+  return 'broadcaster about to disconnect'
+})
 
 // Get camera and microphone
 
@@ -60,6 +63,7 @@ videoSelect.onchange = getStream;
 getStream()
   .then(() => navigator.mediaDevices.enumerateDevices())
   .then((deviceInfos) => {
+    console.log(deviceInfos)
     window.deviceInfos = deviceInfos;
     for (const deviceInfo of deviceInfos) {
       const option = document.createElement("option");
@@ -89,6 +93,7 @@ function getStream() {
   return navigator.mediaDevices
     .getUserMedia(constraints)
     .then((stream) => {
+      console.log(stream)
       window.stream = stream;
       audioSelect.selectedIndex = [...audioSelect.options].findIndex(
         option => option.text === stream.getAudioTracks()[0].label
@@ -101,6 +106,19 @@ function getStream() {
     })
     .catch(handleError);
 }
+
+function getScreen() {
+  let screenCaptureStream;
+  navigator.mediaDevices.getDisplayMedia().then((media) => {
+    media.onremovetrack = media.oninactive = () => {
+      console.log("Screen sharing ended");
+      getStream()
+    };
+    videoElement.srcObject = media;
+  })
+}
+
+shareScreenBtn.addEventListener("click", getScreen);
 
 function handleError(error) {
   console.error("Error: ", error);

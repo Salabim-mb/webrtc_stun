@@ -17,17 +17,18 @@
             </p>
         </div>
     </div>
-    <section class="select">
-        <label for="audioSource">Audio source: </label>
-        <select id="audioSource"></select>
-    </section>
-
-    <section class="select">
-        <label for="videoSource">Video source: </label>
-        <select id="videoSource"></select>
-    </section>
-
-    <video playsinline autoplay muted></video>
+    <div class="d-inline-flex w-100">
+        <div class="select">
+            <label for="audioSource">Audio source: </label>
+            <select id="audioSource" class="form-select w-auto"></select>
+        </div>
+        <div class="select">
+            <label for="videoSource">Video source: </label>
+            <select id="videoSource" class="form-select w-auto"></select>
+        </div>
+    </div>
+    <button id="btnScreenShare" class="btn btn-secondary d-block">Share screen</button>
+    <video playsinline autoplay muted class="w-25 h-auto mx-auto d-flex"></video>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./scripts/broadcast.js"></script>
 </body>

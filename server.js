@@ -1,5 +1,5 @@
 const { SOCKET_STATE } = require("./socketState");
-const port = 3000;
+const port = 3030;
 const publicUrl = `${__dirname}/public`;
 
 const express = require("express");
@@ -31,7 +31,7 @@ io.sockets.on(SOCKET_STATE.CONNECT, (socket) => {
   socket.on(SOCKET_STATE.DISCONNECT, () => {
     if (socket.id === broadcaster) {
       broadcaster = null;
-      console.log()
+      console.log("broadcaster disconnected")
       socket.broadcast.emit(SOCKET_STATE.BROADCASTER_DISCONNECT);
     } else {
       socket.to(broadcaster).emit(SOCKET_STATE.DISCONNECT, socket.id);
@@ -39,14 +39,14 @@ io.sockets.on(SOCKET_STATE.CONNECT, (socket) => {
   });
 
   socket.on(SOCKET_STATE.BROADCASTER, () => {
-    if (!broadcaster || socket.id === broadcaster) {
+    // if (!broadcaster || socket.id === broadcaster) {
       broadcaster = socket.id;
       console.log("new Broadcaster! id: " + socket.id)
       socket.broadcast.emit(SOCKET_STATE.BROADCASTER);
-    } else {
-      console.log("someone tried to become a broadcaster while there's already one! id: " + socket.id);
-      socket.to(socket.id).emit(SOCKET_STATE.BROADCAST_IN_PROGRESS);
-    }
+    // } else {
+    //   console.log("someone tried to become a broadcaster while there's already one! id: " + socket.id);
+    //   socket.to(socket.id).emit(SOCKET_STATE.BROADCAST_IN_PROGRESS);
+    // }
   });
   socket.on(SOCKET_STATE.SPECTATOR, () => {
     console.log("new Spectator! id: " + socket.id);
