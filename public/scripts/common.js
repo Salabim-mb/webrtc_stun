@@ -17,3 +17,7 @@ const rtcInitConfig = {
     urls: "stun:stun.stunprotocol.org"
   }]
 }
+
+const createLoggerEl = () => {
+
+}
