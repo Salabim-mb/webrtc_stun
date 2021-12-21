@@ -18,6 +18,12 @@ const rtcInitConfig = {
   }]
 }
 
-const createLoggerEl = () => {
-
+const log = (alertMessage="test", severity="info") => {
+  const loggerEl = document.querySelector("div#logger");
+  loggerEl && loggerEl.renderElement('div', {
+    class: `alert alert-${severity}`,
+    role: 'alert'
+  }, {
+    innerText: `${(new Date()).toISOString()}: ${alertMessage}`
+  }, true);
 }
