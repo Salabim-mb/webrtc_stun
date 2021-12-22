@@ -53,6 +53,10 @@ io.sockets.on(SOCKET_STATE.CONNECT, (socket) => {
     socket.to(broadcaster).emit(SOCKET_STATE.SPECTATOR, socket.id)
   });
 
+  socket.on(SOCKET_STATE.SOURCE_CHANGE, () => {
+    socket.broadcast.emit(SOCKET_STATE.SOURCE_CHANGE);
+  })
+
   socket.on(SOCKET_STATE.MESSAGE, (msg) => {
     // todo
     socket.broadcast.emit(SOCKET_STATE.MESSAGE, socket.id, msg)

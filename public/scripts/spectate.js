@@ -9,9 +9,11 @@ const config = {
 
 const spectatorSocket = io.connect(window.location.origin);
 const video = document.querySelector("video");
-const audioBtn = document.querySelector("#enable-audio");
+const enableAudioBtn = document.querySelector("button#enable-audio");
+const disableAudioBtn = document.querySelector("button#disable-audio");
 
-audioBtn.addEventListener("click", enableAudio)
+enableAudioBtn.addEventListener("click", enableAudio);
+disableAudioBtn.addEventListener("click", disableAudio);
 
 spectatorSocket.on("offer", (id, description) => {
   peerConnection = new RTCPeerConnection(config);
@@ -30,6 +32,10 @@ spectatorSocket.on("offer", (id, description) => {
       spectatorSocket.emit("candidate", id, event.candidate);
     }
   };
+});
+
+spectatorSocket.on("source_change", () => {
+  spectatorSocket.emit("spectate");
 });
 
 spectatorSocket.on("broadcaster_disconnect", () => {
@@ -60,4 +66,9 @@ window.onunload = window.onbeforeunload = () => {
 function enableAudio() {
   console.log("Enabling audio")
   video.muted = false;
+}
+
+function disableAudio() {
+  console.log("Disabling audio")
+  video.muted = true;
 }

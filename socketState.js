@@ -19,7 +19,8 @@ module.exports = {
 
     // misc - error handling, drawing, etc.
     BROADCAST_IN_PROGRESS: "broadcast_taken",
-    LINE_DRAW: "line_draw",
+    SHAPE_DRAW: "line_draw",
     MESSAGE: "message",
+    SOURCE_CHANGE: "source_change"
   }
 }
