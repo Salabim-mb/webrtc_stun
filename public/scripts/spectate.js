@@ -37,6 +37,13 @@ spectatorSocket.on("offer", (id, description) => {
   };
 });
 
+window.onload = () => {
+  spectatorSocket.connect()
+  log("Sending a request to join stream");
+  spectatorSocket.emit("spectate");
+
+}
+
 spectatorSocket.on("source_change", () => {
   log("Source change! Broadcaster is now sharing his screen");
   spectatorSocket.emit("spectate");

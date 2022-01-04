@@ -31,21 +31,25 @@
         </div>
         <hr />
         <button id="btnScreenShare" class="btn btn-secondary d-block">Share screen</button>
-        <div class="card mx-auto d-flex w-50">
+        <div class="card mx-auto d-flex w-50 video-card">
             <div class="card-body">
                 <video playsinline autoplay muted class="w-100 h-auto"></video>
             </div>
         </div>
     </div>
     <div class="w-50 h-100">
-        <div class="card h-100">
+        <div id="logger-container" class="card">
             <h2 class="card-header text-center">Logs</h2>
             <div id="logger" class="card-body h-100">
 
             </div>
         </div>
+        <div id="canvas-container" class="h-25">
+            <canvas></canvas>
+        </div>
     </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="./scripts/broadcast.js"></script>
+    <script src="scripts/canvasHandler.js"></script>
 </body>
 </html>
