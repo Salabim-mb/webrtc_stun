@@ -16,6 +16,7 @@ enableAudioBtn.addEventListener("click", enableAudio);
 disableAudioBtn.addEventListener("click", disableAudio);
 
 spectatorSocket.on("offer", (id, description) => {
+  log("Offer from broadcaster received")
   peerConnection = new RTCPeerConnection(config);
   peerConnection
     .setRemoteDescription(description)
@@ -23,11 +24,13 @@ spectatorSocket.on("offer", (id, description) => {
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
       spectatorSocket.emit("answer", id, peerConnection.localDescription);
+      log("Session description sent to broadcaster");
     });
-  peerConnection.ontrack = event => {
+  peerConnection.ontrack = (event) => {
     video.srcObject = event.streams[0];
+    log("Video stream received!", "success");
   };
-  peerConnection.onicecandidate = event => {
+  peerConnection.onicecandidate = (event) => {
     if (event.candidate) {
       spectatorSocket.emit("candidate", id, event.candidate);
     }
@@ -35,12 +38,14 @@ spectatorSocket.on("offer", (id, description) => {
 });
 
 spectatorSocket.on("source_change", () => {
+  log("Source change! Broadcaster is now sharing his screen");
   spectatorSocket.emit("spectate");
 });
 
 spectatorSocket.on("broadcaster_disconnect", () => {
   console.log("broadcaster disconnected")
   video.srcObject = null;
+  log("Broadcaster has disconnected", "danger");
 })
 
 
@@ -64,11 +69,11 @@ window.onunload = window.onbeforeunload = () => {
 };
 
 function enableAudio() {
-  console.log("Enabling audio")
+  log("Enabling audio", "warning");
   video.muted = false;
 }
 
 function disableAudio() {
-  console.log("Disabling audio")
+  log("Disabling audio", "warning");
   video.muted = true;
 }

@@ -50,7 +50,7 @@ io.sockets.on(SOCKET_STATE.CONNECT, (socket) => {
   });
   socket.on(SOCKET_STATE.SPECTATOR, () => {
     console.log("new Spectator! id: " + socket.id);
-    socket.to(broadcaster).emit(SOCKET_STATE.SPECTATOR, socket.id)
+    socket.to(broadcaster).emit(SOCKET_STATE.SPECTATOR, socket.id);
   });
 
   socket.on(SOCKET_STATE.SOURCE_CHANGE, () => {

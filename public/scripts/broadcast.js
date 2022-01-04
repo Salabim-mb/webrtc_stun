@@ -21,6 +21,7 @@ broadcasterSocket.on("answer", (id, description) => {
 broadcasterSocket.on("spectate", id => {
   const peerConnection = new RTCPeerConnection(config);
   peerConnections[id] = peerConnection;
+  log(id + " joins the stream", "success");
 
   let stream = videoElement.srcObject;
   stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
@@ -36,6 +37,7 @@ broadcasterSocket.on("spectate", id => {
     .then(sdp => peerConnection.setLocalDescription(sdp))
     .then(() => {
       broadcasterSocket.emit("offer", id, peerConnection.localDescription);
+      log("Sending offer to spectator");
     });
 });
 
@@ -43,9 +45,10 @@ broadcasterSocket.on("candidate", (id, candidate) => {
   peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
 });
 
-broadcasterSocket.on("peer_disconnect", id => {
+broadcasterSocket.on("peer_disconnect", (id) => {
   peerConnections[id].close();
   delete peerConnections[id];
+  log("Spectator " + id + " left the stream.", "danger");
 });
 
 window.addEventListener("beforeunload", () => {
@@ -54,15 +57,13 @@ window.addEventListener("beforeunload", () => {
   return 'broadcaster about to disconnect'
 })
 
-// Get camera and microphone
-
-
 audioSelect.onchange = getStream;
 videoSelect.onchange = getStream;
 
 getStream()
   .then(() => navigator.mediaDevices.enumerateDevices())
   .then((deviceInfos) => {
+    log("Devices discovered", "success");
     window.deviceInfos = deviceInfos;
     for (const deviceInfo of deviceInfos) {
       const option = document.createElement("option");
@@ -92,6 +93,7 @@ function getStream() {
   return navigator.mediaDevices
     .getUserMedia(constraints)
     .then((stream) => {
+      log("Stream discovered. Appending to video object.", "success")
       window.stream = stream;
       audioSelect.selectedIndex = [...audioSelect.options].findIndex(
         option => option.text === stream.getAudioTracks()[0].label
@@ -108,6 +110,7 @@ function getStream() {
 function getScreen() {
   let screenCaptureStream;
   navigator.mediaDevices.getDisplayMedia().then((media) => {
+    log("Screen stream discovered, appending to video object", "success");
     media.onremovetrack = media.oninactive = () => {
       console.log("Screen sharing ended");
       getStream()
