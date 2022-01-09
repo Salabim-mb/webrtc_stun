@@ -46,3 +46,7 @@ const log = (alertMessage="test", severity="info") => {
     innerHTML: `<b>${trDate(new Date())}:</b> ${alertMessage}`
   }, true);
 }
+
+const dumpCanvas = (el) => {
+  return el.toDataURL();
+}

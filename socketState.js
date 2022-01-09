@@ -19,7 +19,7 @@ module.exports = {
 
     // misc - error handling, drawing, etc.
     BROADCAST_IN_PROGRESS: "broadcast_taken",
-    SHAPE_DRAW: "line_draw",
+    CANVAS_DATA: "canvas_data",
     MESSAGE: "message",
     SOURCE_CHANGE: "source_change"
   }

@@ -84,3 +84,18 @@ function disableAudio() {
   log("Disabling audio", "warning");
   video.muted = true;
 }
+
+const canvas = document.querySelector("canvas");
+canvas.addEventListener('mouseup', () => {
+  const data = dumpCanvas(canvas);
+  spectatorSocket.emit("canvas_data", data);
+}, false) // event broadcasted by ws
+
+spectatorSocket.on("canvas_data", (data) => {
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+  };
+  img.src = data;
+});

@@ -125,3 +125,18 @@ shareScreenBtn.addEventListener("click", getScreen);
 function handleError(error) {
   console.error("Error: ", error);
 }
+
+const canvas = document.querySelector("canvas");
+canvas.addEventListener('mouseup', () => {
+  const data = dumpCanvas(canvas);
+  broadcasterSocket.emit("canvas_data", data);
+}, false) // event broadcasted by ws
+
+broadcasterSocket.on("canvas_data", (data) => {
+  const img = new Image();
+  img.onload = () => {
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0);
+  };
+  img.src = data;
+});

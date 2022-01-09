@@ -61,6 +61,10 @@ io.sockets.on(SOCKET_STATE.CONNECT, (socket) => {
     // todo
     socket.broadcast.emit(SOCKET_STATE.MESSAGE, socket.id, msg)
   });
+
+  socket.on(SOCKET_STATE.CANVAS_DATA, (data) => {
+    socket.broadcast.emit(SOCKET_STATE.CANVAS_DATA, data);
+  });
 });
 
 server.listen(port, () => console.log(`
