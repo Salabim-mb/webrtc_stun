@@ -12,8 +12,12 @@ resize();
 // last known position
 let pos = { x: 0, y: 0 };
 
+// events supporting also touch screens
 canvas.addEventListener('mousemove', draw, false);
+canvas.addEventListener('touchmove', draw, false);
+
 canvas.addEventListener('mousedown', setPosition, false);
+canvas.addEventListener('touchstart', setPosition, false);
 // mouseup event implemented in both spectator and broadcast
 canvas.addEventListener('mouseenter', setPosition, false);
 

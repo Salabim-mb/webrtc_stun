@@ -38,6 +38,7 @@ broadcasterSocket.on("spectate", id => {
     .then(() => {
       broadcasterSocket.emit("offer", id, peerConnection.localDescription);
       log("Sending offer to spectator");
+      console.log("offer send", performance.now())
     });
 });
 
@@ -64,6 +65,7 @@ getStream()
   .then(() => navigator.mediaDevices.enumerateDevices())
   .then((deviceInfos) => {
     log("Devices discovered", "success");
+    console.log("device discovery", performance.now())
     window.deviceInfos = deviceInfos;
     for (const deviceInfo of deviceInfos) {
       const option = document.createElement("option");
@@ -94,6 +96,7 @@ function getStream() {
     .getUserMedia(constraints)
     .then((stream) => {
       log("Stream discovered. Appending to video object.", "success")
+      console.log("stream discovery", performance.now())
       window.stream = stream;
       audioSelect.selectedIndex = [...audioSelect.options].findIndex(
         option => option.text === stream.getAudioTracks()[0].label
@@ -111,12 +114,16 @@ function getScreen() {
   let screenCaptureStream;
   navigator.mediaDevices.getDisplayMedia().then((media) => {
     log("Screen stream discovered, appending to video object", "success");
+    console.log("screen discovery", performance.now())
     media.onremovetrack = media.oninactive = () => {
       console.log("Screen sharing ended");
       getStream()
     };
     videoElement.srcObject = media;
-    broadcasterSocket.emit("source_change", JSON.stringify(media));
+    broadcasterSocket.emit("source_change", JSON.stringify({
+      media: media,
+      timeSent: performance.now()
+    }));
   })
 }
 
@@ -127,10 +134,13 @@ function handleError(error) {
 }
 
 const canvas = document.querySelector("canvas");
-canvas.addEventListener('mouseup', () => {
+const dumpCanvasWrapper = () => {
   const data = dumpCanvas(canvas);
   broadcasterSocket.emit("canvas_data", data);
-}, false) // event broadcasted by ws
+}
+
+canvas.addEventListener('mouseup', dumpCanvasWrapper, false)
+canvas.addEventListener('touchend', dumpCanvasWrapper, false);
 
 broadcasterSocket.on("canvas_data", (data) => {
   const img = new Image();
